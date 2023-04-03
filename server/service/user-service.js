@@ -19,7 +19,7 @@ class UserService {
         const user = await UserModel.create({
             email,
             password: hashPassword,
-            activationLink,
+            activationLink
         });
 
         await mailService.sendActivationMail(
@@ -33,7 +33,7 @@ class UserService {
 
         return {
             ...tokens,
-            user: userDto,
+            user: userDto
         };
     }
 
@@ -57,7 +57,7 @@ class UserService {
         const isPassEquals = await bcrypt.compare(password, user.password);
 
         if (!isPassEquals) {
-            throw ApiError('Неверный пароль');
+            throw ApiError.BadRequest('Неверный пароль');
         }
 
         const userDto = new UserDto(user);
@@ -67,13 +67,13 @@ class UserService {
 
         return {
             ...tokens,
-            user: userDto,
+            user: userDto
         };
     }
 
     async logout(refreshToken) {
-        const token = await tokenService.removeToken(refreshToken)
-        return token
+        const token = await tokenService.removeToken(refreshToken);
+        return token;
     }
 
     async refresh(refreshToken) {
@@ -81,14 +81,14 @@ class UserService {
             throw ApiError.UnauthorizedError();
         }
 
-        const userData = tokenService.validateRefreshToken(refreshToken)
-        const tokenFromDb = await tokenService.findToken(refreshToken)
+        const userData = tokenService.validateRefreshToken(refreshToken);
+        const tokenFromDb = await tokenService.findToken(refreshToken);
 
         if (!userData || !tokenFromDb) {
-            throw ApiError.UnauthorizedError()
+            throw ApiError.UnauthorizedError();
         }
 
-        const user = await UserModel.findById(userData.id)
+        const user = await UserModel.findById(userData.id);
         const userDto = new UserDto(user);
         const tokens = tokenService.generateTokens({...userDto});
 
@@ -96,13 +96,13 @@ class UserService {
 
         return {
             ...tokens,
-            user: userDto,
+            user: userDto
         };
     }
 
     async getAllUsers() {
         const users = await UserModel.find();
-        return users
+        return users;
     }
 }
 
