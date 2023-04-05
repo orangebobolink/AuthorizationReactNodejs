@@ -57,3 +57,5 @@ class ProductService {
         return product;
     }
 }
+
+module.exports = new ProductService();

@@ -12,26 +12,26 @@ router.post(
     body('password').isLength({min: 3, max: 32}),
     userController.registration
 );
-router.post('/product/create',
-    authMiddleware,
+router.post('/login', userController.login);
+router.post('/logout', userController.logout);
+router.get('/activate/:link', userController.activate);
+router.get('/refresh', userController.refresh);
+router.get('/users', authMiddleware, userController.getUsers);
+
+router.use(authMiddleware);
+
+router.post('/product',
     body('name').isLength({min: 2, max: 30}),
     body('price').isFloat(),
     body('description').isLength({min: 3, max: 100}),
-
     productController.create);
-router.post('/login', userController.login);
-router.post('/logout', userController.logout);
-router.put('/product/update/:id',
-    authMiddleware,
+router.get('/product', productController.getProducts);
+router.get('/product:id', productController.getProductById);
+router.put('/product',
     body('name').isLength({min: 2, max: 30}),
     body('price').isFloat(),
     body('description').isLength({min: 3, max: 100}),
     productController.update);
-router.get('/activate/:link', userController.activate);
-router.get('/refresh', userController.refresh);
-router.get('/users', authMiddleware, userController.getUsers);
-router.get('/product/get/:id', productController.getProductById);
-router.get('/product/get', authMiddleware, productController.getProducts);
-router.delete('/product/delete/:id', authMiddleware, productController.delete);
+router.delete('/product/:id', productController.delete);
 
 module.exports = router;

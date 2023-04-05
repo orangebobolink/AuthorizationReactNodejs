@@ -1,13 +1,17 @@
 import React, {useContext, useEffect, useState} from 'react';
-import LoginForm from './components/LoginForm';
+import LoginForm from './components/UI/LoginForm/LoginForm';
 import {Context} from './index';
 import {observer} from 'mobx-react-lite';
-import {IUser} from './models/IUser';
-import UserService from './services/UserService';
+import './styles/App.css';
+import {IProduct} from './models/IProduct';
+import {ProductService} from './services/ProductService';
+import ProductList from './components/UI/ProductList/ProductList';
+import Header from './components/UI/header/Header';
+import ProductForm from './components/UI/ProductForm/ProductForm';
 
 function App() {
     const {store} = useContext(Context);
-    const [users, setUsers] = useState<IUser[]>([]);
+    const [products, setProducts] = useState<IProduct[]>([]);
 
     useEffect(() => {
         if (localStorage.getItem('token')) {
@@ -15,10 +19,29 @@ function App() {
         }
     }, []);
 
-    async function getUsers() {
+    async function getProducts() {
         try {
-            const response = await UserService.fetchUsers();
-            setUsers(response.data);
+            const response = await ProductService.fetchProducts();
+            setProducts(response.data);
+        } catch (e) {
+            console.log(e);
+        }
+    }
+
+    async function createProduct(product: IProduct) {
+        try {
+            const response = await ProductService.createProduct(product);
+            setProducts([product, ...products]);
+        } catch (e) {
+            console.log(e);
+        }
+    }
+
+    async function deleteProduct(product: IProduct) {
+        try {
+            const response = await ProductService.deleteProduct(product);
+            const newProducts = products.filter(p => p._id != product._id);
+            setProducts(newProducts);
         } catch (e) {
             console.log(e);
         }
@@ -36,24 +59,15 @@ function App() {
 
     return (
         <div className='App'>
-            <h1>{store.isAuth
-                 ? `Пользователь авторизован ${store.user.email}`
-                 : 'Авторизуйте'}</h1>
-            <button onClick={() => store.logout()}>Выйти</button>
-
-            <h1>{store.user.isActivated
-                 ? 'Аккаунт потвержден по почте'
-                 : 'Аккаунт не потвержден по почте'}</h1>
+            <Header/>
+            <ProductForm create={createProduct}/>
             <div>
-                <button onClick={getUsers}>
-                    Получить пользователей
+                <button onClick={getProducts}>
+                    Получить товары
                 </button>
             </div>
-            {users.map(user =>
-                <div key={user.email}>
-                    {user.email}
-                </div>
-            )}
+            <ProductList products={products}
+                         remove={deleteProduct}/>
         </div>
     );
 }
