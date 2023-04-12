@@ -5,14 +5,16 @@ import {IProduct} from '../../../models/IProduct';
 interface Props {
     products: IProduct[];
     remove: (product: IProduct) => Promise<void>;
+    admin: boolean;
 }
 
-const ProductList: FC<Props> = ({products, remove}) => {
+const ProductList: FC<Props> = ({products, remove, admin}) => {
     return (
         <div>
             {products.map(product =>
                 <ProductItem product={product}
-                             remove={remove}/>
+                             remove={remove}
+                             admin={admin}/>
             )}
         </div>
     );

@@ -4,11 +4,16 @@ import {observer} from 'mobx-react-lite';
 import cl from './LoginForm.module.css';
 import Input from '../input/Input';
 import AuthButton from '../AuthButton/AuthButton';
+import {Navigate} from 'react-router-dom';
 
 const LoginForm: FC = () => {
     const [email, setEmail] = useState<string>('');
     const [password, setPassword] = useState('');
     const {store} = useContext(Context);
+
+    if (store.isAuth) {
+        return <Navigate to='/'/>;
+    }
 
     return (
         <div className={cl.div}>
@@ -26,10 +31,16 @@ const LoginForm: FC = () => {
                 />
             </div>
             <div className={cl.item}>
-                <AuthButton onClick={() => store.login(email, password)}>
+                <AuthButton onClick={() => {
+                    store.login(email, password);
+
+                }}>
                     Логин
                 </AuthButton>
-                <AuthButton onClick={() => store.registration(email, password)}>
+                <AuthButton onClick={() => {
+                    store.registration(email, password);
+
+                }}>
                     Регистрация
                 </AuthButton>
             </div>

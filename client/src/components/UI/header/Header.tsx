@@ -1,18 +1,22 @@
 import React, {FC, useContext} from 'react';
 import {observer} from 'mobx-react-lite';
 import {Context} from '../../../index';
+import cl from './Header.module.css';
+import Button from '../button/Button';
 
 const Header: FC = () => {
     const {store} = useContext(Context);
 
     return (
-        <header>
+        <header className={cl.head}>
             <h1>{`Пользователь ${store.user.email}`}</h1>
-            <button onClick={() => store.logout()}>Выйти</button>
-
             <h1>{store.user.isActivated
                  ? 'Аккаунт потвержден по почте'
                  : 'Аккаунт не потвержден по почте'}</h1>
+
+            <Button onClick={() => store.logout()}>Выйти</Button>
+
+
         </header>
     );
 };

@@ -10,6 +10,7 @@ export default class Store {
     user = {} as IUser;
     isAuth = false;
     isLoading = false;
+    isAdmin = false;
 
     constructor() {
         makeAutoObservable(this);
@@ -27,6 +28,10 @@ export default class Store {
         this.isLoading = bool;
     }
 
+    setAdmin(bool: boolean) {
+        this.isAdmin = bool;
+    }
+
     async login(email: string, password: string) {
         try {
             const response = await AuthService.login(email, password);
@@ -34,6 +39,10 @@ export default class Store {
             localStorage.setItem('token', response.data.accessToken);
             this.setAuth(true);
             this.setUser(response.data.user);
+
+            if (this.user.roles.includes('admin')) {
+                this.setAdmin(true);
+            }
         } catch (e: any) {
             console.log(e.response?.data?.message);
         }
@@ -46,6 +55,10 @@ export default class Store {
             localStorage.setItem('token', response.data.accessToken);
             this.setAuth(true);
             this.setUser(response.data.user);
+
+            if (this.user.roles.includes('admin')) {
+                this.setAdmin(true);
+            }
         } catch (e: any) {
             console.log(e.response?.data?.message);
         }
@@ -57,6 +70,7 @@ export default class Store {
             localStorage.removeItem('token');
             this.setAuth(false);
             this.setUser({} as IUser);
+            this.setAdmin(false);
         } catch (e: any) {
             console.log(e.response?.data?.message);
         }
@@ -70,6 +84,10 @@ export default class Store {
             localStorage.setItem('token', response.data.accessToken);
             this.setAuth(true);
             this.setUser(response.data.user);
+
+            if (this.user.roles.includes('admin')) {
+                this.setAdmin(true);
+            }
         } catch (e: any) {
             console.log(e.response?.data?.message);
         } finally {

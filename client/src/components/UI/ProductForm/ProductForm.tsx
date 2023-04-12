@@ -2,6 +2,8 @@ import React, {FC, useState} from 'react';
 import Input from '../input/Input';
 import {IProduct} from '../../../models/IProduct';
 import Button from '../button/Button';
+import cl from './ProductForm.module.css';
+import {Link} from 'react-router-dom';
 
 interface Props {
     create: (product: IProduct) => Promise<void>;
@@ -23,7 +25,7 @@ const ProductForm: FC<Props> = ({create}) => {
     };
 
     return (
-        <form>
+        <form className={cl.form}>
             <Input
                 value={product.name}
                 onChange={(e: any) => setProduct({...product, name: e.target.value})}
@@ -43,7 +45,7 @@ const ProductForm: FC<Props> = ({create}) => {
                 placeholder='Описание'
             />
 
-            <Button onClick={addNewProduct}>Создать пост</Button>
+            <Button onClick={addNewProduct}><Link to='/'>Создать продукт</Link></Button>
         </form>
     );
 };

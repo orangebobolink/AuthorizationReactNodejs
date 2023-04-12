@@ -6,9 +6,10 @@ import AuthButton from '../AuthButton/AuthButton';
 interface Props {
     product: IProduct;
     remove: (product: IProduct) => Promise<void>;
+    admin: boolean;
 }
 
-const ProductItem: FC<Props> = ({product, remove}) => {
+const ProductItem: FC<Props> = ({product, remove, admin}) => {
 
     return (
         <div className={cl.item}
@@ -20,7 +21,10 @@ const ProductItem: FC<Props> = ({product, remove}) => {
                 <div>{product.price.$numberDecimal}</div>
             </div>
             <div className={cl.item__btn}>
-                <AuthButton onClick={async () => await remove(product)}>Удалить</AuthButton>
+                {admin
+                 ? <AuthButton onClick={async () => await remove(product)}>Удалить</AuthButton>
+                 : <div></div>}
+
             </div>
         </div>
     );
